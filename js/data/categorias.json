@@ -1,0 +1,6 @@
+[
+		{ "id": "1", "descripcion": "Novicio"},
+		{ "id": "2", "descripcion": "Intermedio"},
+		{ "id": "3", "descripcion": "Superior"},
+		{ "id": "4", "descripcion": "General"}
+]

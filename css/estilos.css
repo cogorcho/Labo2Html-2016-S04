@@ -1,0 +1,67 @@
+body {
+    background-color: cadetblue;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+header {
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+footer {
+    text-align: center;
+}
+
+table {
+    text-align: left;
+    display: inline-block;
+    border: 1px solid black;
+}
+
+thead tr td {
+    color: cyan;
+    text-align: center;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: DarkSeaGreen ;
+}
+
+tr:hover {
+    background-color: #ffff99;
+    font-style: italic;
+    cursor: pointer;
+} 
+
+section#principal {
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    background-color: #444;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    border-radius: 7px;
+}
+
+nav li {
+    line-height: 35px;
+    display: inline;
+}
+
+nav a {
+    font-family: 'Montserrat', serif;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: LightSkyBlue;
+    text-decoration: none;
+}
+nav ul li a:hover {
+    color: Salmon;
+    font-size: 1.2em;
+}
