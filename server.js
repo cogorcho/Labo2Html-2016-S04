@@ -117,5 +117,6 @@ http.createServer(function (req, res) {
       }
   }
 }).listen(9615);
+console.log('Server started');
 
 

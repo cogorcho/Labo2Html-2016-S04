@@ -25,6 +25,9 @@ var datos = [
     { clave: 'CODQ', valor: 'codigoq' }
 ];
 
+var categoriaSeleccionada = undefined;
+var areaSeleccionada = undefined;
+
 //--------------------------------------------------------------------
 // Cargar local storage con toda la data
 //--------------------------------------------------------------------
@@ -312,15 +315,12 @@ function filterRespuesta(que, categoria, area, preguntaid) {
     var keys = Object.keys(localStorage);
     var cuantas = keys.length;
     var buscar = que + categoria + area + preguntaid;
-    console.log(buscar);
     var lista = [];
     for(var i = 0; i < cuantas; i++) {
-        if (keys[i].substring(0,7) == buscar) {
-            console.log(keys[i].substring(0,7));
+        if (keys[i].slice(0,-1) == buscar) {
             lista.push(JSON.parse(localStorage.getItem(keys[i])));
         }
     }
-    //lista.sort(compare);
     return lista;
 }
 
@@ -332,16 +332,57 @@ function rowSelected(ev) {
     obj.texto = fila.childNodes[1].innerHTML;
     obj.correcta = fila.childNodes[2].innerHTML;
 
-    var cq =    "Nro: " + obj.preguntaid + 
-                "\nTexto: " +  obj.texto +
-                "\nCorrecta: " + obj.correcta;
+    var cq =  obj.preguntaid + ": " + obj.texto + "(" + obj.correcta + ")\n";
+    var resps = filterRespuesta('RESP', categoriaSeleccionada.value, areaSeleccionada.value, obj.preguntaid)
 
-    alert(cq);
-    //console.dir(ev);
-    var resp = filterRespuesta('RESP', categoriaSeleccionada.id, areaSeleccionada.id, obj.preguntaid)
-    console.log(resp);
+    alert(cq + strRespuestas(resps));
+
+    var data = {
+        nro : obj.preguntaid,
+        texto : obj.texto,
+        correcta : obj.correcta,
+        respuestas : resps
+    }
+    alert(data.toString());
+    popup(data);
 }
 
-var categoriaSeleccionada = undefined;
-var areaSeleccionada = undefined;
+function strRespuestas(resps) {
+    var cuantas = resps.length;
+    var cr = "";
+    for (var i = 0; i < cuantas; i++) {
+        cr += resps[i].respuestaid + ': ' + resps[i].texto + "\n";
+    }
+    return cr;
+}
+
+function popup(data) {
+    var div = document.createElement('div');
+    var h4 = document.createElement('h4');
+    h4.textContent = data.nro + ': ' + data.texto;
+    div.appendChild(h4);
+    var hr = document.createElement('hr');
+    div.appendChild(hr);
+
+    var cuantas = data.respuestas.length;
+
+    for (var i = 0; i < cuantas; i++) {
+        var rb = document.createElement('input');
+        var lb = document.createElement('label');
+        lb.setAttribute("for", rb);
+        lb.innerHTML = data.respuestas[i].texto;
+        div.appendChild(lb);
+        rb.type = 'radio';
+        rb.name = 'respuestas';
+        rb.id = data.respuestas[i].respuestaid;
+        rb.value = data.respuestas[i].texto;
+        div.appendChild(rb);
+    }
+
+    div.addEventListener('click', clickRB);
+    console.dir(div);
+
+}
+
+
 
