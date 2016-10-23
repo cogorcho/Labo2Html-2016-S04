@@ -7,6 +7,7 @@ body {
 h2 {
     margin-top: 5px;
     margin-bottom: 4px;
+    font-family: Times, serif;
 }
 
 header {
@@ -21,7 +22,13 @@ footer {
     text-align: center;
     border: 2px solid black;
     border-radius: 6px;
+    font-family: Times, serif;
 }
+
+footer h4 {
+    margin-bottom: 2px;
+}
+
 
 section#principal {
     height: auto;
@@ -140,6 +147,12 @@ tbody {
 
 #btnCerrar {
     float: right;
+}
+
+#cbLabel {
+    font-family: Tahoma, sans-serif;
+    font-size: 0.9em;
+    color: navy;
 }
 
 /*------------------------------------------------
