@@ -46,7 +46,7 @@ function cargarLocalStorage() {
 //--------------------------------------------------------------------
 function ajax(target) {
     // Definimos la URL que vamos a solicitar via ajax
-    var ajax_url = "http://localhost:9615/" + target.valor;
+    var ajax_url = "./"+target.valor;//"http://localhost:9615/" + target.valor;
 
     // Creamos un nuevo objeto encargado de la comunicación
     var ajax_request = new XMLHttpRequest();
@@ -163,7 +163,6 @@ function controlCarga() {
     }
 }
 
-
 function cargarData() {
     var keys = Object.keys(localStorage);
     var cuantasKeys = keys.length;
@@ -202,8 +201,10 @@ function armarRB(objData) {
     var cuantas = objData.data.length;
     var nav = document.getElementById('menu');
     var fset = document.createElement('fieldset');
+    fset.className = 'fset';
 
     var legend = document.createElement('legend');
+    legend.className = 'legend';
     legend.innerHTML = objData.legend;
     fset.appendChild(legend);
 
@@ -259,30 +260,37 @@ function armarTabla(ev) {
         return;
     }
 
+    var yaExiste = document.getElementById('tabla');
+    if (yaExiste!=null) {
+        yaExiste.parentNode.removeChild(yaExiste);
+    }
+
     var preguntas = filterPreguntas('PREG', categoriaSeleccionada.value, areaSeleccionada.value);
     var cuantas = preguntas.length;
 
     var tabla = document.createElement('table');
+    tabla.id = 'tabla';
     var encabezado, cuerpo, fila, pregid, texto, correcta;
 
     encabezado = tabla.createTHead();
     fila = encabezado.insertRow(0); 
     pregid = fila.insertCell(0);
     texto = fila.insertCell(1);
-    correcta = fila.insertCell(2);
+    fila.id = "encabezado";
     pregid.innerHTML = 'Nro';
     texto.innerHTML = 'Pregunta';
-    correcta.innerHTML = 'Ok?';
     
     cuerpo = tabla.createTBody();
     for(var i = 0; i < cuantas; i++) {
         fila = cuerpo.insertRow(0); 
         pregid = fila.insertCell(0);
         texto = fila.insertCell(1);
-        correcta = fila.insertCell(2);
         pregid.innerHTML = preguntas[i].preguntaid;
         texto.innerHTML = preguntas[i].texto;
-        correcta.innerHTML = preguntas[i].correcta;
+        var respcorrecta = document.createAttribute("data-correcta");
+        respcorrecta.value = preguntas[i].correcta;
+        fila.setAttributeNode(respcorrecta);
+        fila.id = "id"+pregid;
     }
     document.getElementById("principal").appendChild(tabla);
 
@@ -326,16 +334,21 @@ function filterRespuesta(que, categoria, area, preguntaid) {
 
 
 function rowSelected(ev) {
+    ev.preventDefault();
     var fila = ev.srcElement.parentElement;
+    var correcta = fila.dataset.correcta;
+
+    if (fila.childNodes.length<2) return;
+    if (fila.id.indexOf("id")!=0) return;
+    
     var obj = {}
     obj.preguntaid = fila.childNodes[0].innerHTML;
     obj.texto = fila.childNodes[1].innerHTML;
-    obj.correcta = fila.childNodes[2].innerHTML;
+    obj.correcta = fila.dataset.correcta;
+
 
     var cq =  obj.preguntaid + ": " + obj.texto + "(" + obj.correcta + ")\n";
     var resps = filterRespuesta('RESP', categoriaSeleccionada.value, areaSeleccionada.value, obj.preguntaid)
-
-    alert(cq + strRespuestas(resps));
 
     var data = {
         nro : obj.preguntaid,
@@ -343,7 +356,6 @@ function rowSelected(ev) {
         correcta : obj.correcta,
         respuestas : resps
     }
-    alert(data.toString());
     popup(data);
 }
 
@@ -353,36 +365,86 @@ function strRespuestas(resps) {
     for (var i = 0; i < cuantas; i++) {
         cr += resps[i].respuestaid + ': ' + resps[i].texto + "\n";
     }
+    
     return cr;
 }
 
 function popup(data) {
-    var div = document.createElement('div');
-    var h4 = document.createElement('h4');
-    h4.textContent = data.nro + ': ' + data.texto;
-    div.appendChild(h4);
-    var hr = document.createElement('hr');
-    div.appendChild(hr);
+    var div0 = document.createElement('div');
+    div0.id = 'text';
+    div0.className = 'lightbox';
+    document.body.appendChild(div0);
+    
+    var div1 = document.createElement('div');
+    div1.className = 'box';
 
-    var cuantas = data.respuestas.length;
+        var pregunta = document.createElement('p');
+        pregunta.className = 'title';
+        pregunta.textContent = data.nro + ': ' + data.texto;
+        div1.appendChild(pregunta);
 
-    for (var i = 0; i < cuantas; i++) {
-        var rb = document.createElement('input');
-        var lb = document.createElement('label');
-        lb.setAttribute("for", rb);
-        lb.innerHTML = data.respuestas[i].texto;
-        div.appendChild(lb);
-        rb.type = 'radio';
-        rb.name = 'respuestas';
-        rb.id = data.respuestas[i].respuestaid;
-        rb.value = data.respuestas[i].texto;
-        div.appendChild(rb);
-    }
+        var respuestas = document.createElement('div');
+        respuestas.className = 'content';
+        var cuantas = data.respuestas.length;
+        for (var i = 0; i < cuantas; i++) {
+            var rb = document.createElement('input');
+            var lb = document.createElement('label');
+            var br = document.createElement('br');
+            lb.setAttribute("for", rb);
+            lb.innerHTML = data.respuestas[i].texto;
+            rb.type = 'radio';
+            rb.name = 'rbRespuestas';
+            rb.id =  data.respuestas[i].texto;
+            rb.value = data.respuestas[i].respuestaid;
+            respuestas.appendChild(rb);
+            respuestas.appendChild(lb);
+            respuestas.appendChild(br);
+        }
+        div1.appendChild(respuestas);
+        respuestas.addEventListener('click', clickRB);
 
-    div.addEventListener('click', clickRB);
-    console.dir(div);
+        var responder = document.createElement('input');
+        responder.type = 'button';
+        responder.value = 'Responder';
+        responder.id = 'btnResponder';
+        var attCorrecta = document.createAttribute("data-correcta");
+        attCorrecta.value = data.correcta;
+        responder.setAttributeNode(attCorrecta);
+        responder.addEventListener('click', procesarRespuesta);
+        div1.appendChild(responder);
 
+        var closer = document.createElement('input');
+        closer.type = 'button';
+        closer.value = 'Cerrar';
+        closer.id = 'btnCerrar';
+        closer.addEventListener('click', closePopup);
+        div1.appendChild(closer);
+
+        div0.appendChild(div1);
+        //Aparezcase la popup!
+        div0.style.display = "block";
+        div0.style.outline = "none";
 }
 
+function closePopup(ev) {
+    ev.preventDefault();
+    var el = document.getElementById('text');
+    document.body.removeChild(el);
+}
 
+function procesarRespuesta(ev) {
+    ev.preventDefault();
+    var rbs = document.getElementsByName('rbRespuestas');
+    var cuantos = rbs.length;
+    var correcta = ev.srcElement.dataset.correcta;
+    var respondida = null;
 
+    for (var i = 0; i < cuantos; i++) {
+        if (rbs[i].checked )
+            respondida = rbs[i].defaultValue
+    }
+    if (respondida === correcta)
+        alert('Correcto!');
+    else
+        alert('Intentelo nuevamente');
+}
