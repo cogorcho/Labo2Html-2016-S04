@@ -473,7 +473,6 @@ function popup(data) {
         responder.addEventListener('click', procesarRespuesta);
         div1.appendChild(responder);
 
-
         var cbxMarcar = document.createElement('input');
         cbxMarcar.type = 'checkbox';
         cbxMarcar.id = 'cbExamen';

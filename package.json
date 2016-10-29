@@ -1,0 +1,25 @@
+{
+  "name": "Labo2",
+  "version": "0.0.0",
+  "description": "Html5, CSS y Javascript, cliente y servidor.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cogorcho/Labo2Html-2016-S04.git"
+  },
+  "keywords": [
+    "Html5",
+    "Javascript",
+    "CSS",
+    "Node"
+  ],
+  "author": "Juan Arce",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cogorcho/Labo2Html-2016-S04/issues"
+  }
+}

@@ -11,6 +11,7 @@ var codigoq = require('./codigoq.js');
 var notfound = require('./notfound.js');
 var js = require('./js.js');
 var css = require('./css.js');
+var imagen = require('./imagen.js');
 
 var route = function(req, res) {
   var pathname = url.parse(req.url).pathname;
@@ -39,6 +40,9 @@ var route = function(req, res) {
       }
       case '/css/estilos.css' : {
         css.enviar(res); break;
+      }
+      case '/images/southpark.jpg' : {
+        imagen.enviar(res); break;
       }
       default : { 
         console.log('Recibido: ' + pathname + '. Requerimiento invalido');

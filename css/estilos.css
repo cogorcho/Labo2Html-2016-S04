@@ -35,6 +35,14 @@ section#principal {
     text-align: center;
 }
 
+img {
+    display: block;
+    margin: auto;
+    width: inherit;  /* This makes the next two lines work in IE8. */
+    max-width: 100%; /* Add !important if needed. */
+    height: auto;    /* Add !important if needed. */
+}
+
 /*-----------------------------------------------
     Manejo del menu de seleccion
 -------------------------------------------------*/
